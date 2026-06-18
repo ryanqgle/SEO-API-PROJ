@@ -1,4 +1,6 @@
 import requests, json
+import sqlalchemy as db
+import pandas as pd
 
 url = "https://api.open-meteo.com/v1/forecast"
 
@@ -17,6 +19,18 @@ params = {
 }
 
 response = requests.get(url, params=params)
+response.raise_for_status()
 data = response.json() 
+
+df = pd.DataFrame.from_dict(data["hourly"])
+
+engine = db.create_engine('sqlite:///weather.db')
+
+df.to_sql('forecast', con=engine, if_exists='replace', index=False)
+
+with engine.connect() as connection:
+   query_result = connection.execute(db.text("SELECT * FROM forecast;")).fetchall()
+   print(pd.DataFrame(query_result))
+
 #print(data)
-print(json.dumps(response.json(), indent=4))
+#print(json.dumps(response.json(), indent=4))
