@@ -20,6 +20,7 @@ def fetch_weather(latitude, longitude):
         "forecast_days": 1,
         "temperature_unit": "fahrenheit",
         "wind_speed_unit": "mph",
+        "timezone": "auto",
     }
 
     response = requests.get(API_URL, params=params, timeout=10)
