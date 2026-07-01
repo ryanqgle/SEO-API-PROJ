@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+  <section class="card lookup">
+    <h1>Check the weather</h1>
+    <p class="subtitle">Enter a set of coordinates to see the current conditions and today's hourly forecast.</p>
+
+    <form method="POST" action="/" class="lookup-form">
+      <input
+        type="text"
+        name="coords"
+        value="{{ coords }}"
+        placeholder="latitude, longitude — e.g. 40.71, -74.01"
+        autofocus>
+      <button type="submit">Get weather</button>
+    </form>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+  </section>
+
+  {% if weather %}
+    <section class="card current">
+      <div class="current-header">
+        <h2>Current conditions</h2>
+        <span class="coords">{{ weather.latitude }}, {{ weather.longitude }}</span>
+      </div>
+      <div class="current-grid">
+        <div class="stat">
+          <span class="stat-value">{{ weather.current.temperature }}°F</span>
+          <span class="stat-label">Temperature</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{{ weather.current.windspeed }} mph</span>
+          <span class="stat-label">Wind speed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{{ weather.current.winddirection }}°</span>
+          <span class="stat-label">Wind direction</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card forecast">
+      <h2>Today's hourly forecast</h2>
+      <div class="hours">
+        {% for hour in weather.hourly %}
+          <div class="hour">
+            <span class="hour-time">{{ hour.time }}</span>
+            <span class="hour-temp">{{ hour.temp }}°F</span>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock content %}
