@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import sqlalchemy as db
+import git
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -60,6 +61,16 @@ def index():
             error = "Could not reach the weather service. Please try again."
 
     return render_template("home.html", weather=weather, error=error, coords=coords)
+
+@app.route("/update_server", methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        repo = git.Repo('/home/ryanqgle/SEO-API-PROJ')
+        origin = repo.remotes.origin
+        origin.pull()
+        return 'Updated PythonAnywhere successfully', 200
+    else:
+        return 'Wrong event type', 400
 
 
 if __name__ == "__main__":
